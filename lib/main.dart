@@ -71,55 +71,83 @@ class InputFormState extends State<InputForm> {
   Widget build(BuildContext context)  {
     return Form(
       key: formKey,
-      child: Row(
+      child: Column(
         children: <Widget> [
-          Expanded(
-            child: TextFormField(
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter value';
-                }
-                if (double.tryParse(value) == null) {
-                  return 'Enter only numbers';
-                }
-                formValue = value;
-                return null;
-              },
-              keyboardType: TextInputType.number,
-              textAlign: TextAlign.center,
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                  SizedBox(
+                    width: 100,
+                    child: TextFormField(
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter value';
+                        }
+                        if (double.tryParse(value) == null) {
+                          return 'Enter only numbers';
+                        }
+                        formValue = value;
+                        return null;
+                      },
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                DropdownButton(
+                  value: leftDropdownValue,
+                  items: <String>['RUB', 'EUR', 'USD']
+                      .map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      leftDropdownValue = newValue!;
+                    });
+                  },
+                ),
+              ],
             ),
           ),
-          DropdownButton(
-            value: leftDropdownValue,
-              items: <String>['RUB', 'EUR', 'USD']
-                  .map<DropdownMenuItem<String>>((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
-              onChanged: (String? newValue) {
-                setState(() {
-                  leftDropdownValue = newValue!;
-                });
-              },
-          ),
-          Expanded(child: Text(finalResult, textAlign: TextAlign.center,)),
-          DropdownButton(
-            value: rightDropdownValue,
-            items: <String>['RUB', 'EUR', 'USD']
-                .map<DropdownMenuItem<String>>((String value) {
-              return DropdownMenuItem<String>(
-                value: value,
-                child: Text(value),
-              );
-            }).toList(),
-            onChanged: (String? newValue) {
-              setState(() {
-                rightDropdownValue = newValue!;
-              });
-            },
-          ),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+              child:  Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                      width: 100,
+                      margin: const EdgeInsets.all(4),
+                      padding: const EdgeInsets.all(3),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.grey,
+                          width: 1,
+                        ),
+                      ),
+                      child: Text(finalResult, textAlign: TextAlign.center,),
+                  ),
+                  DropdownButton(
+                    value: rightDropdownValue,
+                    items: <String>['RUB', 'EUR', 'USD']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        rightDropdownValue = newValue!;
+                        });
+                    },
+                  ),
+                ],
+              ),
+            ),
           ElevatedButton(
             onPressed: () {
               if (formKey.currentState!.validate() && !isLoading) {
