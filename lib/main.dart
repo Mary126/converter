@@ -1,6 +1,4 @@
-import 'dart:ffi';
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
@@ -39,7 +37,6 @@ class InputFormState extends State<InputForm> {
   String leftDropdownValue = 'RUB';
   String rightDropdownValue = 'EUR';
   String formValue = '';
-  double? result = 0;
   String finalResult = '0';
   bool isLoading = false;
   Future fetchCurrency(double amount, String from, String to) async {
@@ -82,6 +79,9 @@ class InputFormState extends State<InputForm> {
                 if (value == null || value.isEmpty) {
                   return 'Please enter value';
                 }
+                if (double.tryParse(value) == null) {
+                  return 'Enter only numbers';
+                }
                 formValue = value;
                 return null;
               },
@@ -122,17 +122,8 @@ class InputFormState extends State<InputForm> {
           ),
           ElevatedButton(
             onPressed: () {
-              if (formKey.currentState!.validate()) {
-                result = double.tryParse(formValue);
-                if (result == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Input only numbers')),
-                  );
-                  changeResult(null);
-                }
-                else {
-                  changeResult(result);
-                }
+              if (formKey.currentState!.validate() && !isLoading) {
+                  changeResult(double.tryParse(formValue));
               }
             },
             child: isLoading == true ? const Text("Loading") : const Text("Convert"),
